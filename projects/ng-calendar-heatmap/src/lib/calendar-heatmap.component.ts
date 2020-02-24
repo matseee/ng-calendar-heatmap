@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'lib-ng-calendar-heatmap',
+  selector: 'calendar-heatmap',
   template: `
     <p>
-      ng-calendar-heatmap works!
+      calendar-heatmap works!
     </p>
   `,
   styles: []
 })
-export class NgCalendarHeatmapComponent implements OnInit {
+export class CalendarHeatmapComponent implements OnInit {
 
   constructor() { }
 

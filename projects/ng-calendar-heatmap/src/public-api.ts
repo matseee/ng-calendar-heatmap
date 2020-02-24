@@ -1,6 +1,6 @@
 /*
- * Public API Surface of ng-calendar-heatmap
+ * Public API
  */
 
-export * from './lib/ng-calendar-heatmap.component';
-export * from './lib/ng-calendar-heatmap.module';
+export * from './lib/calendar-heatmap.component';
+export * from './lib/calendar-heatmap.module';

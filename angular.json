@@ -95,7 +95,7 @@
       "projectType": "library",
       "root": "projects/ng-calendar-heatmap",
       "sourceRoot": "projects/ng-calendar-heatmap/src",
-      "prefix": "lib",
+      "prefix": "",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
@@ -109,20 +109,11 @@
             }
           }
         },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/ng-calendar-heatmap/src/test.ts",
-            "tsConfig": "projects/ng-calendar-heatmap/tsconfig.spec.json",
-            "karmaConfig": "projects/ng-calendar-heatmap/karma.conf.js"
-          }
-        },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/ng-calendar-heatmap/tsconfig.lib.json",
-              "projects/ng-calendar-heatmap/tsconfig.spec.json"
+              "projects/ng-calendar-heatmap/tsconfig.lib.json"
             ],
             "exclude": [
               "**/node_modules/**"
