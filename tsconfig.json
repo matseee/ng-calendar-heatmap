@@ -17,7 +17,13 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "ng-calendar-heatmap": [
+        "dist/ng-calendar-heatmap/ng-calendar-heatmap",
+        "dist/ng-calendar-heatmap"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
