@@ -1,5 +1,5 @@
 import { calendarDefaults } from './calendar-heatmap.defaults';
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation, OnChanges } from '@angular/core';
 import * as d3 from 'd3';
 import * as moment_ from 'moment';
 import { CalendarData } from './models/calendar-data';
@@ -45,7 +45,7 @@ const moment = moment_;
   `,
   encapsulation: ViewEncapsulation.None
 })
-export class CalendarHeatmapComponent implements OnInit {
+export class CalendarHeatmapComponent implements OnInit, OnChanges {
   @Input() options: CalendarOptions;
   @Input() data: CalendarData[];
 
@@ -59,7 +59,6 @@ export class CalendarHeatmapComponent implements OnInit {
   protected dayRects: any;
 
   protected container: HTMLDivElement;
-  // protected options: CalendarOptions;
 
   constructor() {
     this.options = calendarDefaults;
@@ -69,7 +68,22 @@ export class CalendarHeatmapComponent implements OnInit {
 
   ngOnInit(): void {
     // TODO: override options :)
-    this.render();
+    // this.render();
+  }
+
+  ngOnChanges(): void {
+    if (this.data) {
+      this.options.data = this.data;
+      this.options.counterMap = {};
+
+      this.data.forEach((element, index) => {
+        const key = moment(element.date).format('YYYY-MM-DD');
+        const counter = this.options.counterMap[key] || 0;
+        this.options.counterMap[key] = counter + element.count;
+      });
+
+      this.render();
+    }
   }
 
   render() {
