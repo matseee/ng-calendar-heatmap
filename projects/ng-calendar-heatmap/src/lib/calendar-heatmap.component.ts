@@ -1,17 +1,48 @@
+import { calendarDefaults } from './calendar-heatmap.defaults';
 import { Component, Input, OnInit } from '@angular/core';
 import * as d3 from 'd3';
-import * as moment from 'moment';
-import { CalendarWeekStart } from './enums/calendar-weekstart';
+import * as moment_ from 'moment';
 import { CalendarData } from './models/calendar-data';
 import { CalendarOptions } from './models/calendar-options';
+
+const moment = moment_;
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'calendar-heatmap',
   template: `
-    <div #container></div>
+    <div class="container"></div>
   `,
-  styles: []
+  styles: [`
+    text.month-name,
+    text.calendar-heatmap-legend-text,
+    text.day-initial {
+      font-size: 10px;
+      fill: inherit;
+      font-family: Helvetica, arial, 'Open Sans', sans-serif;
+    }
+    rect.day-cell:hover {
+      stroke: #555555;
+      stroke-width: 1px;
+    }
+    .day-cell-tooltip {
+      position: absolute;
+      z-index: 9999;
+      padding: 5px 9px;
+      color: #bbbbbb;
+      font-size: 12px;
+      background: rgba(0, 0, 0, 0.85);
+      border-radius: 3px;
+      text-align: center;
+    }
+    .day-cell-tooltip > span {
+      font-family: Helvetica, arial, 'Open Sans', sans-serif
+    }
+    .calendar-heatmap {
+      box-sizing: initial;
+      overflow: visible;
+    }
+  `]
 })
 export class CalendarHeatmapComponent implements OnInit {
   // tslint:disable-next-line:no-input-rename
@@ -29,40 +60,17 @@ export class CalendarHeatmapComponent implements OnInit {
   protected dayRects: any;
 
   protected container: HTMLDivElement;
-  protected options: CalendarOptions = {
-    width: 750,
-    height: 110,
-    legendWidth: 150,
-    selector: 'body',
-    SQUARE_LENGTH: 11,
-    SQUARE_PADDING: 2,
-    MONTH_LABEL_PADDING: 6,
-    now: moment().endOf('day').toDate(),
-    yearAgo: moment().startOf('day').subtract(1, 'year').toDate(),
-    startDate: null,
-    counterMap: {},
-    data: [],
-    max: null,
-    colorRange: ['#D8E6E7', '#218380'],
-    tooltipEnabled: true,
-    tooltipUnit: 'contribution',
-    legendEnabled: true,
-    onClick: null,
-    weekStart: CalendarWeekStart.SUNDAY,
-    locale: {
-      months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-      days: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-      no: 'No',
-      on: 'on',
-      less: 'Less',
-      more: 'More'
-    }
-  };
+  protected options: CalendarOptions;
 
-  constructor() { }
+  constructor() {
+    this.options = calendarDefaults;
+    this.options.now = moment().endOf('day').toDate();
+    this.options.yearAgo = moment().startOf('day').subtract(1, 'year').toDate();
+  }
 
   ngOnInit(): void {
     // TODO: override options :)
+    this.render();
   }
 
   render() {
@@ -72,7 +80,7 @@ export class CalendarHeatmapComponent implements OnInit {
 
     this.dateRange = d3.timeDays(this.options.yearAgo, this.options.now);
     this.monthRange = d3.timeMonths(moment(this.options.yearAgo).startOf('month').toDate(), this.options.now);
-    this.firstDate = moment(this.dateRange[0]).toDate();
+    this.firstDate = moment(this.dateRange[0]);
     if (this.options.data.length === 0) {
       this.options.max = 0;
     } else if (this.options.max === null) {
@@ -107,9 +115,11 @@ export class CalendarHeatmapComponent implements OnInit {
       .attr('fill', (d) => this.color(this.countForDate(d)))
       .attr('x', (d, i) => {
         const cellDate = moment(d);
-        const result = cellDate.week() - this.firstDate.week()
-          + (this.firstDate.weeksInYear() * (cellDate.weekYear() - this.firstDate.weekYear()));
-        return result * (this.options.SQUARE_LENGTH + this.options.SQUARE_PADDING);
+        const result = cellDate.week() - me.firstDate.week()
+          + (me.firstDate.weeksInYear() * (cellDate.weekYear() - me.firstDate.weekYear()));
+        const ret = result * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING);
+        console.log(ret);
+        return ret;
       })
       .attr('y', (d, i) => {
         return me.options.MONTH_LABEL_PADDING + me.formatWeekday(d.getDay()) * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING);
