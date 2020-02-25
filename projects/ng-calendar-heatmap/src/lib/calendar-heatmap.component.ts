@@ -1,9 +1,10 @@
 import { calendarDefaults } from './calendar-heatmap.defaults';
-import { Component, Input, OnInit, ViewEncapsulation, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation, OnChanges, ViewChild, ElementRef } from '@angular/core';
 import * as d3 from 'd3';
 import * as moment_ from 'moment';
 import { CalendarData } from './models/calendar-data';
 import { CalendarOptions } from './models/calendar-options';
+import { CalendarWeekStart } from './enums/calendar-weekstart';
 
 const moment = moment_;
 
@@ -41,13 +42,17 @@ const moment = moment_;
     }
   `],
   template: `
-    <div class="container"></div>
+    <div class="{{selector}}"></div>
   `,
   encapsulation: ViewEncapsulation.None
 })
 export class CalendarHeatmapComponent implements OnInit, OnChanges {
+  public static counter = 0;
+
   @Input() options: CalendarOptions;
   @Input() data: CalendarData[];
+
+  public selector: string;
 
   protected dateRange: Date[];
   protected monthRange: Date[];
@@ -58,41 +63,81 @@ export class CalendarHeatmapComponent implements OnInit, OnChanges {
   protected tooltip: any;
   protected dayRects: any;
 
-  protected container: HTMLDivElement;
-
   constructor() {
-    this.options = calendarDefaults;
+    this.options = {
+      width: 750,
+      height: 110,
+      legendWidth: 150,
+      selector: '.container',
+      SQUARE_LENGTH: 11,
+      SQUARE_PADDING: 2,
+      MONTH_LABEL_PADDING: 6,
+      now: new Date(),
+      yearAgo: new Date(),
+      startDate: null,
+      counterMap: {},
+      data: [],
+      max: null,
+      colorRange: ['#D8E6E7', '#218380'],
+      tooltipEnabled: true,
+      tooltipUnit: 'contribution',
+      legendEnabled: true,
+      onClick: null,
+      weekStart: CalendarWeekStart.SUNDAY,
+      locale: {
+        months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        days: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+        no: 'No',
+        on: 'on',
+        less: 'Less',
+        more: 'More'
+      }
+    };
     this.options.now = moment().endOf('day').toDate();
     this.options.yearAgo = moment().startOf('day').subtract(1, 'year').toDate();
+
+    CalendarHeatmapComponent.counter++;
+    this.selector = `calendar-heatmap-${CalendarHeatmapComponent.counter}`;
   }
 
   ngOnInit(): void {
-    // TODO: override options :)
-    // this.render();
+    this.options.data = this.data;
+    this.options.counterMap = {};
+
+    this.data.forEach((element, index) => {
+      const key = moment(element.date).format('YYYY-MM-DD');
+      const counter = this.options.counterMap[key] || 0;
+      this.options.counterMap[key] = counter + element.count;
+    });
+
+    setTimeout(() => {
+      this.render();
+    }, 100);
   }
 
   ngOnChanges(): void {
-    if (this.data) {
-      this.options.data = this.data;
-      this.options.counterMap = {};
+    console.log('on-changes');
+    // if (this.data) {
+    //   this.options.data = this.data;
+    //   this.options.counterMap = {};
 
-      this.data.forEach((element, index) => {
-        const key = moment(element.date).format('YYYY-MM-DD');
-        const counter = this.options.counterMap[key] || 0;
-        this.options.counterMap[key] = counter + element.count;
-      });
+    //   this.data.forEach((element, index) => {
+    //     const key = moment(element.date).format('YYYY-MM-DD');
+    //     const counter = this.options.counterMap[key] || 0;
+    //     this.options.counterMap[key] = counter + element.count;
+    //   });
 
-      this.render();
-    }
+    //   this.render();
+    // }
   }
 
   render() {
-    d3.select(this.options.selector)
+    d3.select(this.getSelector())
       .selectAll('svg.calendar-heatmap')
       .remove();
 
     this.dateRange = d3.timeDays(this.options.yearAgo, this.options.now);
-    this.monthRange = d3.timeMonths(moment(this.options.yearAgo).startOf('month').toDate(), this.options.now);
+    this.monthRange = d3.timeMonths(moment(this.options.startDate).toDate(), this.options.now);
     this.firstDate = moment(this.dateRange[0]);
     if (this.options.data.length === 0) {
       this.options.max = 0;
@@ -110,7 +155,7 @@ export class CalendarHeatmapComponent implements OnInit, OnChanges {
 
   protected renderChart() {
     const me = this;
-    const svg = d3.select(this.options.selector)
+    const svg = d3.select(this.getSelector())
       .style('position', 'relative')
       .append('svg')
       .attr('width', this.options.width)
@@ -145,7 +190,7 @@ export class CalendarHeatmapComponent implements OnInit, OnChanges {
 
     if (this.options.tooltipEnabled) {
       enterSelection.merge(this.dayRects).on('mouseover', (d, i) => {
-        me.tooltip = d3.select(me.options.selector)
+        me.tooltip = d3.select(me.getSelector())
           .append('div')
           .attr('class', 'day-cell-tooltip')
           .html(me.tooltipHTMLForDate(d))
@@ -263,5 +308,9 @@ export class CalendarHeatmapComponent implements OnInit, OnChanges {
       + ' ' + this.pluralizedTooltipUnit(count)
       + '</strong> ' + this.options.locale.on + ' ' + dateStr
       + '</span>';
+  }
+
+  protected getSelector(): string {
+    return `.${this.selector}`;
   }
 }

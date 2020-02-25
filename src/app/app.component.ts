@@ -10,6 +10,7 @@ import { CalendarData } from 'ng-calendar-heatmap';
 })
 export class AppComponent {
   public chartData: CalendarData[];
+  public chartData2: CalendarData[];
 
   constructor() {
     const now: Date = moment()
@@ -21,6 +22,16 @@ export class AppComponent {
       .toDate();
 
     this.chartData = d3.timeDays(yearAgo, now).map(dateElement => {
+      return {
+        date: dateElement,
+        count:
+          dateElement.getDay() !== 0 && dateElement.getDay() !== 6
+            ? Math.floor(Math.random() * 120)
+            : Math.floor(Math.random() * 20)
+      } as CalendarData;
+    });
+
+    this.chartData2 = d3.timeDays(yearAgo, now).map(dateElement => {
       return {
         date: dateElement,
         count:
