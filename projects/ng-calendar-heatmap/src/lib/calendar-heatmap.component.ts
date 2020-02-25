@@ -1,5 +1,5 @@
 import { calendarDefaults } from './calendar-heatmap.defaults';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import * as d3 from 'd3';
 import * as moment_ from 'moment';
 import { CalendarData } from './models/calendar-data';
@@ -10,9 +10,6 @@ const moment = moment_;
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'calendar-heatmap',
-  template: `
-    <div class="container"></div>
-  `,
   styles: [`
     text.month-name,
     text.calendar-heatmap-legend-text,
@@ -42,12 +39,14 @@ const moment = moment_;
       box-sizing: initial;
       overflow: visible;
     }
-  `]
+  `],
+  template: `
+    <div class="container"></div>
+  `,
+  encapsulation: ViewEncapsulation.None
 })
 export class CalendarHeatmapComponent implements OnInit {
-  // tslint:disable-next-line:no-input-rename
-  @Input('options') overwriteOptions: CalendarOptions;
-
+  @Input() options: CalendarOptions;
   @Input() data: CalendarData[];
 
   protected dateRange: Date[];
@@ -60,7 +59,7 @@ export class CalendarHeatmapComponent implements OnInit {
   protected dayRects: any;
 
   protected container: HTMLDivElement;
-  protected options: CalendarOptions;
+  // protected options: CalendarOptions;
 
   constructor() {
     this.options = calendarDefaults;
@@ -117,9 +116,7 @@ export class CalendarHeatmapComponent implements OnInit {
         const cellDate = moment(d);
         const result = cellDate.week() - me.firstDate.week()
           + (me.firstDate.weeksInYear() * (cellDate.weekYear() - me.firstDate.weekYear()));
-        const ret = result * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING);
-        console.log(ret);
-        return ret;
+        return result * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING);
       })
       .attr('y', (d, i) => {
         return me.options.MONTH_LABEL_PADDING + me.formatWeekday(d.getDay()) * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING);
@@ -127,25 +124,25 @@ export class CalendarHeatmapComponent implements OnInit {
 
     if (typeof this.options.onClick === 'function') {
       enterSelection.merge(this.dayRects).on('click', (d) => {
-        const count = this.countForDate(d);
-        this.options.onClick({ date: d, count });
+        const count = me.countForDate(d);
+        me.options.onClick({ date: d, count });
       });
     }
 
     if (this.options.tooltipEnabled) {
       enterSelection.merge(this.dayRects).on('mouseover', (d, i) => {
-        this.tooltip = d3.select(this.options.selector)
+        me.tooltip = d3.select(me.options.selector)
           .append('div')
           .attr('class', 'day-cell-tooltip')
-          .html(this.tooltipHTMLForDate(d))
-          .style('left', () => Math.floor(i / 7) * this.options.SQUARE_LENGTH + 'px')
+          .html(me.tooltipHTMLForDate(d))
+          .style('left', () => (Math.floor(i / 7) * me.options.SQUARE_LENGTH + 'px'))
           .style('top', () => {
-            return this.formatWeekday(d.getDay())
-              * (this.options.SQUARE_LENGTH + this.options.SQUARE_PADDING) + this.options.MONTH_LABEL_PADDING * 2 + 'px';
+            return me.formatWeekday(d.getDay())
+              * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING) + me.options.MONTH_LABEL_PADDING * 2 + 'px';
           });
       })
         .on('mouseout', (d, i) => {
-          this.tooltip.remove();
+          me.tooltip.remove();
         });
     }
 
@@ -233,13 +230,13 @@ export class CalendarHeatmapComponent implements OnInit {
 
     // tslint:disable-next-line:forin
     for (const i in this.options.tooltipUnit) {
-      const _rule = this.options.tooltipUnit[i];
-      let _min = _rule.min;
-      let _max = _rule.max || _rule.min;
-      _max = _max === 'Infinity' ? Infinity : _max;
+      const rule = this.options.tooltipUnit[i];
+      const min = rule.min;
+      let max = rule.max || rule.min;
+      max = max === 'Infinity' ? Infinity : max;
 
-      if (count >= _min && count <= _max) {
-        return _rule.unit;
+      if (count >= min && count <= max) {
+        return rule.unit;
       }
     }
   }
