@@ -8,7 +8,7 @@
 2. Install dependencies `npm i --save d3 momentjs`
 
 2. Import module into `app.module.ts`:
-```
+```typescript
 ...
 import { CalendarHeatmapModule } from 'ng-calendar-heatmap';
 ...
@@ -22,7 +22,7 @@ import { CalendarHeatmapModule } from 'ng-calendar-heatmap';
 ```
 
 3. Add calendar-heatmap component to your component:
-```
+```html
 <ng-calendar-heatmap [data]="calendarData" [options]="calendarOptions"></ng-calendar-heatmap>
 ```
 
@@ -30,14 +30,14 @@ import { CalendarHeatmapModule } from 'ng-calendar-heatmap';
 
 ## data structure
 
-```
+```typescript
 export interface CalendarData {
   date: Date;
   count: number;
 }
 ```
 
-```
+```typescript
 export interface CalendarOptions {
   width?: number;
   height?: number;
@@ -59,14 +59,14 @@ export interface CalendarOptions {
 }
 ```
 
-```
+```typescript
 export enum CalendarWeekStart {
   SUNDAY = 0,
   MONDAY = 1
 }
 ```
 
-```
+```typescript
 export interface CalendarLocale {
   months: string[];
   days: string[];
