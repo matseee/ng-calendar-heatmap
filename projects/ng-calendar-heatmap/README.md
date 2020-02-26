@@ -1,4 +1,4 @@
-# Angular calendar heatmap
+# ng-calendar-heatmap
 ![Example](./src/assets/ng-calendar-heatmap.png)
 
 ## How to use
