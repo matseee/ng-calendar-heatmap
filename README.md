@@ -41,6 +41,7 @@ export interface CalendarData {
 export interface CalendarOptions {
   width?: number;
   height?: number;
+  responsive?: boolean;
   legendWidth?: number;
   SQUARE_LENGTH?: number;
   SQUARE_PADDING?: number;
