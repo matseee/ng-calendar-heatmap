@@ -11,8 +11,8 @@ import { CalendarWeekStart } from 'projects/ng-calendar-heatmap/src/public-api';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  public chartData: CalendarData[];
-  public chartData2: CalendarData[];
+  public calendarData: CalendarData[];
+  public calendarData2: CalendarData[];
 
   public calendarOptions: CalendarOptions;
 
@@ -31,7 +31,7 @@ export class AppComponent {
       colorRange: ['#D8E6E7', '#832124']
     };
 
-    this.chartData = d3.timeDays(yearAgo, now).map(dateElement => {
+    this.calendarData = d3.timeDays(yearAgo, now).map(dateElement => {
       return {
         date: dateElement,
         count:
@@ -41,7 +41,7 @@ export class AppComponent {
       } as CalendarData;
     });
 
-    this.chartData2 = d3.timeDays(yearAgo, now).map(dateElement => {
+    this.calendarData2 = d3.timeDays(yearAgo, now).map(dateElement => {
       return {
         date: dateElement,
         count:
