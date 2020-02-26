@@ -1,6 +1,6 @@
 [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Ffischer-matthias%2Fng-calendar-heatmap%2Fbadge&style=flat)](https://actions-badge.atrox.dev/fischer-matthias/ng-calendar-heatmap/goto) [![npm version](https://badge.fury.io/js/ng-calendar-heatmap.svg)](https://badge.fury.io/js/ng-calendar-heatmap) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # ng calendar heatmap [(live-demo)](http://fischer-matthias.github.io/ng-calendar-heatmap/)
-![Example](./src/assets/ng-calendar-heatmap.png)
+![Example](https://raw.githubusercontent.com/fischer-matthias/ng-calendar-heatmap/master/src/assets/ng-calendar-heatmap.png)
 
 ## How to use
 1. Install `npm i --save ng-calendar-heatmap`
