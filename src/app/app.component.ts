@@ -1,7 +1,9 @@
+import { CalendarOptions } from './../../projects/ng-calendar-heatmap/src/lib/models/calendar-options';
 import { Component } from '@angular/core';
 import * as d3 from 'd3';
 import * as moment from 'moment';
 import { CalendarData } from 'ng-calendar-heatmap';
+import { CalendarWeekStart } from 'projects/ng-calendar-heatmap/src/public-api';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +14,8 @@ export class AppComponent {
   public chartData: CalendarData[];
   public chartData2: CalendarData[];
 
+  public calendarOptions: CalendarOptions;
+
   constructor() {
     const now: Date = moment()
       .endOf('day')
@@ -20,6 +24,12 @@ export class AppComponent {
       .startOf('day')
       .subtract(1, 'year')
       .toDate();
+
+    this.calendarOptions = {
+      weekStart: CalendarWeekStart.MONDAY,
+      onClick: (data: CalendarData) => console.log(data),
+      colorRange: ['#D8E6E7', '#832124']
+    };
 
     this.chartData = d3.timeDays(yearAgo, now).map(dateElement => {
       return {

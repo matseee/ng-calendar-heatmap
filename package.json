@@ -1,7 +1,8 @@
 {
   "name": "ng-calendar-heatmap-example",
+  "version": "0.1.0",
   "author": "Matthias Fischer",
-  "version": "0.0.0",
+  "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

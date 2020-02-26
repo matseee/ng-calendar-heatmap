@@ -1,16 +1,13 @@
-import { calendarDefaults } from './calendar-heatmap.defaults';
-import { Component, Input, OnInit, ViewEncapsulation, OnChanges, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, ViewEncapsulation, SimpleChanges, SimpleChange } from '@angular/core';
 import * as d3 from 'd3';
 import * as moment_ from 'moment';
 import { CalendarData } from './models/calendar-data';
-import { CalendarOptions } from './models/calendar-options';
-import { CalendarWeekStart } from './enums/calendar-weekstart';
+import { CalendarOptions, getDefaultOptions } from './models/calendar-options';
 
 const moment = moment_;
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'calendar-heatmap',
+  selector: 'ng-calendar-heatmap',
   styles: [`
     text.month-name,
     text.calendar-heatmap-legend-text,
@@ -46,13 +43,17 @@ const moment = moment_;
   `,
   encapsulation: ViewEncapsulation.None
 })
-export class CalendarHeatmapComponent implements OnInit, OnChanges {
+export class CalendarHeatmapComponent implements OnChanges {
   public static counter = 0;
 
-  @Input() options: CalendarOptions;
-  @Input() data: CalendarData[];
+  @Input('data') newData: CalendarData[];
+  @Input('options') customOptions: CalendarOptions;
 
   public selector: string;
+
+  protected options: CalendarOptions;
+  protected data: CalendarData[];
+  protected counterMap: any;
 
   protected dateRange: Date[];
   protected monthRange: Date[];
@@ -64,35 +65,7 @@ export class CalendarHeatmapComponent implements OnInit, OnChanges {
   protected dayRects: any;
 
   constructor() {
-    this.options = {
-      width: 750,
-      height: 110,
-      legendWidth: 150,
-      selector: '.container',
-      SQUARE_LENGTH: 11,
-      SQUARE_PADDING: 2,
-      MONTH_LABEL_PADDING: 6,
-      now: new Date(),
-      yearAgo: new Date(),
-      startDate: null,
-      counterMap: {},
-      data: [],
-      max: null,
-      colorRange: ['#D8E6E7', '#218380'],
-      tooltipEnabled: true,
-      tooltipUnit: 'contribution',
-      legendEnabled: true,
-      onClick: null,
-      weekStart: CalendarWeekStart.SUNDAY,
-      locale: {
-        months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        days: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-        no: 'No',
-        on: 'on',
-        less: 'Less',
-        more: 'More'
-      }
-    };
+    this.options = getDefaultOptions();
     this.options.now = moment().endOf('day').toDate();
     this.options.yearAgo = moment().startOf('day').subtract(1, 'year').toDate();
 
@@ -100,57 +73,51 @@ export class CalendarHeatmapComponent implements OnInit, OnChanges {
     this.selector = `calendar-heatmap-${CalendarHeatmapComponent.counter}`;
   }
 
-  ngOnInit(): void {
-    this.options.data = this.data;
-    this.options.counterMap = {};
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.hasOwnProperty('customOptions')) {
+      if ((changes.customOptions as SimpleChange).currentValue !== this.options) {
+        this.options = this.mergeOptions((changes.customOptions as SimpleChange).currentValue as CalendarOptions);
+      }
+    }
+    if (changes.hasOwnProperty('newData')) {
+      if ((changes.newData as SimpleChange).currentValue !== this.data) {
+        this.counterMap = {};
+        this.data = (changes.newData as SimpleChange).currentValue;
+        this.data.forEach((element, index) => {
+          const key = moment(element.date).format('YYYY-MM-DD');
+          const counter = this.counterMap[key] || 0;
+          this.counterMap[key] = counter + element.count;
+        });
 
-    this.data.forEach((element, index) => {
-      const key = moment(element.date).format('YYYY-MM-DD');
-      const counter = this.options.counterMap[key] || 0;
-      this.options.counterMap[key] = counter + element.count;
-    });
+        this.callChartCreation();
+      }
+    }
+  }
 
+  protected callChartCreation(): void {
+    this.prepareChart();
     setTimeout(() => {
-      this.render();
+      this.renderChart();
     }, 100);
   }
 
-  ngOnChanges(): void {
-    console.log('on-changes');
-    // if (this.data) {
-    //   this.options.data = this.data;
-    //   this.options.counterMap = {};
-
-    //   this.data.forEach((element, index) => {
-    //     const key = moment(element.date).format('YYYY-MM-DD');
-    //     const counter = this.options.counterMap[key] || 0;
-    //     this.options.counterMap[key] = counter + element.count;
-    //   });
-
-    //   this.render();
-    // }
-  }
-
-  render() {
+  protected prepareChart() {
     d3.select(this.getSelector())
       .selectAll('svg.calendar-heatmap')
       .remove();
 
     this.dateRange = d3.timeDays(this.options.yearAgo, this.options.now);
-    this.monthRange = d3.timeMonths(moment(this.options.startDate).toDate(), this.options.now);
     this.firstDate = moment(this.dateRange[0]);
-    if (this.options.data.length === 0) {
+    this.monthRange = d3.timeMonths(moment(this.firstDate).toDate(), this.options.now);
+    if (this.data.length === 0) {
       this.options.max = 0;
     } else if (this.options.max === null) {
       this.options.max = d3.max(this.data, (d) => d.count);
     }
 
-    // color range
     this.color = d3.scaleLinear()
       .range(this.options.colorRange)
       .domain([0, this.options.max]);
-
-    this.renderChart();
   }
 
   protected renderChart() {
@@ -171,13 +138,13 @@ export class CalendarHeatmapComponent implements OnInit, OnChanges {
       .attr('width', this.options.SQUARE_LENGTH)
       .attr('height', this.options.SQUARE_LENGTH)
       .attr('fill', (d) => this.color(this.countForDate(d)))
-      .attr('x', (d, i) => {
+      .attr('x', (d) => {
         const cellDate = moment(d);
         const result = cellDate.week() - me.firstDate.week()
           + (me.firstDate.weeksInYear() * (cellDate.weekYear() - me.firstDate.weekYear()));
         return result * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING);
       })
-      .attr('y', (d, i) => {
+      .attr('y', (d) => {
         return me.options.MONTH_LABEL_PADDING + me.formatWeekday(d.getDay()) * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING);
       });
 
@@ -237,7 +204,8 @@ export class CalendarHeatmapComponent implements OnInit, OnChanges {
     }
 
     this.dayRects.exit().remove();
-    const monthLabels = svg.selectAll('.month')
+
+    svg.selectAll('.month')
       .data(this.monthRange)
       .enter().append('text')
       .attr('class', 'month-name')
@@ -251,7 +219,7 @@ export class CalendarHeatmapComponent implements OnInit, OnChanges {
 
         return Math.floor(matchIndex / 7) * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING);
       })
-      .attr('y', 0);  // fix these to the top
+      .attr('y', 0);
 
     this.options.locale.days.forEach((day, index) => {
       index = this.formatWeekday(index);
@@ -268,7 +236,7 @@ export class CalendarHeatmapComponent implements OnInit, OnChanges {
 
   protected countForDate(d: Date) {
     const key = moment(d).format('YYYY-MM-DD');
-    return this.options.counterMap[key] || 0;
+    return this.counterMap[key] || 0;
   }
 
   protected formatWeekday(weekDay) {
@@ -287,15 +255,16 @@ export class CalendarHeatmapComponent implements OnInit, OnChanges {
       return (this.options.tooltipUnit + (count === 1 ? '' : 's'));
     }
 
-    // tslint:disable-next-line:forin
     for (const i in this.options.tooltipUnit) {
-      const rule = this.options.tooltipUnit[i];
-      const min = rule.min;
-      let max = rule.max || rule.min;
-      max = max === 'Infinity' ? Infinity : max;
+      if (this.options.tooltipUnit[i]) {
+        const rule = this.options.tooltipUnit[i];
+        const min = rule.min;
+        let max = rule.max || rule.min;
+        max = max === 'Infinity' ? Infinity : max;
 
-      if (count >= min && count <= max) {
-        return rule.unit;
+        if (count >= min && count <= max) {
+          return rule.unit;
+        }
       }
     }
   }
@@ -308,6 +277,18 @@ export class CalendarHeatmapComponent implements OnInit, OnChanges {
       + ' ' + this.pluralizedTooltipUnit(count)
       + '</strong> ' + this.options.locale.on + ' ' + dateStr
       + '</span>';
+  }
+
+  protected mergeOptions(cust: CalendarOptions): CalendarOptions {
+    const options = this.options;
+
+    for (const key in cust) {
+      if (cust.hasOwnProperty(key)) {
+        options[key] = cust[key];
+      }
+    }
+
+    return options;
   }
 
   protected getSelector(): string {
