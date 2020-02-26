@@ -4,6 +4,7 @@
 
 ## How to use
 1. Install `npm i --save ng-calendar-heatmap`
+2. Install dependencies `npm i --save d3 momentjs`
 
 2. Import module into `app.module.ts`:
 ```
@@ -24,7 +25,7 @@ import { CalendarHeatmapModule } from 'ng-calendar-heatmap';
 <ng-calendar-heatmap [data]="calendarData" [options]="calendarOptions"></ng-calendar-heatmap>
 ```
 
-4. Bind data
+4. Bind data (currently it only renders, when data is available)
 
 ## data structure
 
@@ -75,5 +76,4 @@ export interface CalendarLocale {
 }
 ```
 
-
-## based on [calendar heatmap](https://github.com/DKirwan/calendar-heatmap)
+## angular wrapper for [calendar heatmap](https://github.com/DKirwan/calendar-heatmap)
