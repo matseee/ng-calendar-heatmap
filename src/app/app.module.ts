@@ -1,8 +1,14 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CalendarHeatmapModule } from 'ng-calendar-heatmap';
 
 import { AppComponent } from './app.component';
-import { CalendarHeatmapModule } from 'ng-calendar-heatmap';
 
 @NgModule({
   declarations: [
@@ -10,7 +16,13 @@ import { CalendarHeatmapModule } from 'ng-calendar-heatmap';
   ],
   imports: [
     BrowserModule,
-    CalendarHeatmapModule
+    HttpClientModule,
+    CalendarHeatmapModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent]
