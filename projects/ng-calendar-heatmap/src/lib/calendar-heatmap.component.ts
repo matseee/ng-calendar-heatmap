@@ -136,14 +136,14 @@ export class CalendarHeatmapComponent implements OnChanges {
 
     if (this.options.responsive) {
       d3.select(this.getSelector())
-        .attr('class', 'container-responsive');
+        .attr('class', `${this.selector} container-responsive`);
       svg.attr('viewBox', `0 0 ${this.options.width} ${this.options.height}`)
         .attr('preserveAspectRatio', 'xMidYMid meet');
     } else {
       svg.attr('height', this.options.height)
         .attr('width', this.options.width);
       d3.select(this.getSelector())
-        .attr('class', 'container');
+        .attr('class', `${this.selector} container`);
     }
 
     this.dayRects = svg.selectAll('.day-cell')
@@ -248,17 +248,6 @@ export class CalendarHeatmapComponent implements OnChanges {
           .text(day);
       }
     });
-  }
-
-  protected getCurrentWidth(): string {
-    const width = d3.select(this.selector).style('width');
-    debugger;
-    console.log(width);
-    return width;
-  }
-
-  protected getCurrentHeight(): string {
-    return d3.select(this.selector).style('height');
   }
 
   protected countForDate(d: Date) {

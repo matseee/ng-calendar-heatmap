@@ -22,6 +22,7 @@ export class AppComponent {
 
     this.calendarOptionsCustom = {
       weekStart: CalendarWeekStart.MONDAY,
+      responsive: true,
       onClick: (data: CalendarData) => console.log(data),
       colorRange: ['#D8E6E7', '#832124']
     };
