@@ -973,6 +973,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 ng-calendar-heatmap
+MIT
 
 regenerator-runtime
 MIT
