@@ -4,7 +4,7 @@ import { CalendarLocale } from './calendar-locale';
 
 export function getDefaultOptions(): CalendarOptions {
   return {
-    width: 750,
+    width: 670,
     height: 110,
     legendWidth: 150,
     SQUARE_LENGTH: 11,

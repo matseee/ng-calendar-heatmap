@@ -125,10 +125,10 @@ export class CalendarHeatmapComponent implements OnChanges {
     const svg = d3.select(this.getSelector())
       .style('position', 'relative')
       .append('svg')
-      .attr('width', this.options.width)
       .attr('class', 'calendar-heatmap')
-      .attr('height', this.options.height)
-      .style('padding', '36px');
+      .attr('viewBox', `0 0 ${this.options.width} ${this.options.height}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .style('margin', '36px');
 
     this.dayRects = svg.selectAll('.day-cell')
       .data(this.dateRange);
@@ -232,6 +232,17 @@ export class CalendarHeatmapComponent implements OnChanges {
           .text(day);
       }
     });
+  }
+
+  protected getCurrentWidth(): string {
+    const width = d3.select(this.selector).style('width');
+    debugger;
+    console.log(width);
+    return width;
+  }
+
+  protected getCurrentHeight(): string {
+    return d3.select(this.selector).style('height');
   }
 
   protected countForDate(d: Date) {
