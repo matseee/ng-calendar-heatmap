@@ -1,4 +1,5 @@
-# ng-calendar-heatmap
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![npm version](https://badge.fury.io/js/ng-calendar-heatmap.svg)](https://badge.fury.io/js/ng-calendar-heatmap)
+# Angular calendar heatmap
 ![Example](./src/assets/ng-calendar-heatmap.png)
 
 ## How to use
