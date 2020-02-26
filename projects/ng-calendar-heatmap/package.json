@@ -1,7 +1,7 @@
 {
   "name": "ng-calendar-heatmap",
   "description": "D3 calendar heatmap for angular",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Matthias Fischer",
   "license": "MIT",
   "homepage": "https://fischer-matthias.github.io/ng-calendar-heatmap/",
@@ -10,7 +10,11 @@
     "url": "git+https://github.com/fischer-matthias/ng-calendar-heatmap.git"
   },
   "keywords": [
-    "angular", "D3", "calendar", "heatmap", "component"
+    "angular",
+    "D3",
+    "calendar",
+    "heatmap",
+    "component"
   ],
   "peerDependencies": {
     "@angular/common": "^9.0.2",
