@@ -16,13 +16,11 @@
     "heatmap",
     "component"
   ],
-  "dependencies": {
-    "d3": "^5.15.0",
-    "moment": "^2.24.0"
-  },
   "peerDependencies": {
     "@angular/common": "^9.0.2",
     "@angular/core": "^9.0.2",
-    "tslib": "^1.10.0"
+    "tslib": "^1.10.0",
+    "d3": "^5.15.0",
+    "moment": "^2.24.0"
   }
 }
