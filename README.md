@@ -1,6 +1,6 @@
 ![Node.js CI](https://github.com/fischer-matthias/ng-calendar-heatmap/workflows/Node.js%20CI/badge.svg) [![npm version](https://badge.fury.io/js/ng-calendar-heatmap.svg)](https://badge.fury.io/js/ng-calendar-heatmap) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # ng calendar heatmap [(live-demo)](http://fischer-matthias.github.io/ng-calendar-heatmap/)
-### Based on [DKirwan/calendar-heatmap](https://github.com/DKirwan/calendar-heatmap)
+#### Based on [DKirwan/calendar-heatmap](https://github.com/DKirwan/calendar-heatmap)
 ![Example](https://raw.githubusercontent.com/fischer-matthias/ng-calendar-heatmap/master/src/assets/ng-calendar-heatmap.png)
 
 ## How to use
