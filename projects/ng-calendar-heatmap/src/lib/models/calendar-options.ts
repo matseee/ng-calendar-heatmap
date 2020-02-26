@@ -6,6 +6,7 @@ export function getDefaultOptions(): CalendarOptions {
   return {
     width: 670,
     height: 110,
+    responsive: false,
     legendWidth: 150,
     SQUARE_LENGTH: 11,
     SQUARE_PADDING: 2,
@@ -34,6 +35,7 @@ export function getDefaultOptions(): CalendarOptions {
 export interface CalendarOptions {
   width?: number;
   height?: number;
+  responsive?: boolean;
   legendWidth?: number;
   SQUARE_LENGTH?: number;
   SQUARE_PADDING?: number;

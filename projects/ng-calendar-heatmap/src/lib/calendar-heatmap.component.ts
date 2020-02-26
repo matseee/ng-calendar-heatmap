@@ -37,6 +37,12 @@ const moment = moment_;
       box-sizing: initial;
       overflow: visible;
     }
+    .container {
+      overflow: hidden;
+      display: flex !important;
+      align-items: flex-end !important;
+      flex-direction: column !important;
+    }
   `],
   template: `
     <div class="{{selector}}"></div>
@@ -126,9 +132,19 @@ export class CalendarHeatmapComponent implements OnChanges {
       .style('position', 'relative')
       .append('svg')
       .attr('class', 'calendar-heatmap')
-      .attr('viewBox', `0 0 ${this.options.width} ${this.options.height}`)
-      .attr('preserveAspectRatio', 'xMidYMid meet')
       .style('margin', '36px');
+
+    if (this.options.responsive) {
+      d3.select(this.getSelector())
+        .attr('class', 'container-responsive');
+      svg.attr('viewBox', `0 0 ${this.options.width} ${this.options.height}`)
+        .attr('preserveAspectRatio', 'xMidYMid meet');
+    } else {
+      svg.attr('height', this.options.height)
+        .attr('width', this.options.width);
+      d3.select(this.getSelector())
+        .attr('class', 'container');
+    }
 
     this.dayRects = svg.selectAll('.day-cell')
       .data(this.dateRange);

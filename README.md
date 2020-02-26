@@ -76,3 +76,10 @@ export interface CalendarLocale {
   more: string;
 }
 ```
+
+## how to start development envoirement
+0. `git clone git@github.com:fischer-matthias/ng-calendar-heatmap.git`
+1. `npm install`
+2. `ng build ng-calendar-heatmap --watch`
+3. `ng serve`
+4. view results under http://localhost:4200
