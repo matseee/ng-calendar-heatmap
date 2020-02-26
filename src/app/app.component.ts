@@ -1,9 +1,9 @@
-import { CalendarOptions } from './../../projects/ng-calendar-heatmap/src/lib/models/calendar-options';
 import { Component } from '@angular/core';
 import * as d3 from 'd3';
 import * as moment from 'moment';
-import { CalendarData } from 'ng-calendar-heatmap';
-import { CalendarWeekStart } from 'projects/ng-calendar-heatmap/src/public-api';
+import { CalendarData, CalendarWeekStart, CalendarOptions } from 'ng-calendar-heatmap';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +16,12 @@ export class AppComponent {
 
   public calendarOptions: CalendarOptions;
 
-  constructor() {
+  constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+
+    iconRegistry.addSvgIcon(
+      'github-circle',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/github-circle.svg'));
+
     const now: Date = moment()
       .endOf('day')
       .toDate();
@@ -50,5 +55,9 @@ export class AppComponent {
             : Math.floor(Math.random() * 10)
       } as CalendarData;
     });
+  }
+
+  openGithub() {
+    window.open('https://github.com/fischer-matthias/ng-calendar-heatmap');
   }
 }

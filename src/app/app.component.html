@@ -1,3 +1,25 @@
-<h1>Calendar heatmap example</h1>
-<ng-calendar-heatmap [data]="calendarData2"></ng-calendar-heatmap>
-<ng-calendar-heatmap [data]="calendarData" [options]="calendarOptions"></ng-calendar-heatmap>
+<mat-toolbar>
+    <span>Calendar heatmap example</span>
+    <span class="example-spacer"></span>
+    <button mat-icon-button (click)="openGithub()">
+        <mat-icon svgIcon="github-circle"></mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-card class="example-card">
+    <mat-card-header>
+        <mat-card-title>Default options</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <ng-calendar-heatmap [data]="calendarData2"></ng-calendar-heatmap>
+    </mat-card-content>
+</mat-card>
+
+<mat-card class="example-card">
+    <mat-card-header>
+        <mat-card-title>Custom options</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <ng-calendar-heatmap [data]="calendarData" [options]="calendarOptions"></ng-calendar-heatmap>
+    </mat-card-content>
+</mat-card>
