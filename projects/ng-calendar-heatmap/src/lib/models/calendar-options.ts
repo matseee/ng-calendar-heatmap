@@ -4,13 +4,15 @@ import { CalendarLocale } from './calendar-locale';
 
 export function getDefaultOptions(): CalendarOptions {
   return {
-    width: 670,
+    width: 705,
     height: 110,
     responsive: false,
-    legendWidth: 150,
+    legendWidth: 95,
     SQUARE_LENGTH: 11,
     SQUARE_PADDING: 2,
     MONTH_LABEL_PADDING: 6,
+    DAY_WIDTH: 12,
+    MONTH_LABEL_HEIGHT: 10,
     now: new Date(),
     yearAgo: new Date(),
     startDate: null,
@@ -40,6 +42,8 @@ export interface CalendarOptions {
   SQUARE_LENGTH?: number;
   SQUARE_PADDING?: number;
   MONTH_LABEL_PADDING?: number;
+  DAY_WIDTH?: number;
+  MONTH_LABEL_HEIGHT?: number;
   now?: Date;
   yearAgo?: Date;
   startDate?: Date;

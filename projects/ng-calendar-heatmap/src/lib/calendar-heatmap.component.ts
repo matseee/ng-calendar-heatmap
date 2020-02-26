@@ -132,7 +132,8 @@ export class CalendarHeatmapComponent implements OnChanges {
       .style('position', 'relative')
       .append('svg')
       .attr('class', 'calendar-heatmap')
-      .style('margin', '36px');
+      .style('margin-top', '36px')
+      .style('margin-bottom', '36px');
 
     if (this.options.responsive) {
       d3.select(this.getSelector())
@@ -158,10 +159,11 @@ export class CalendarHeatmapComponent implements OnChanges {
         const cellDate = moment(d);
         const result = cellDate.week() - me.firstDate.week()
           + (me.firstDate.weeksInYear() * (cellDate.weekYear() - me.firstDate.weekYear()));
-        return result * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING);
+        return result * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING) + me.options.DAY_WIDTH;
       })
       .attr('y', (d) => {
-        return me.options.MONTH_LABEL_PADDING + me.formatWeekday(d.getDay()) * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING);
+        return me.options.MONTH_LABEL_PADDING + me.options.MONTH_LABEL_HEIGHT
+          + me.formatWeekday(d.getDay()) * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING);
       });
 
     if (typeof this.options.onClick === 'function') {
@@ -233,17 +235,18 @@ export class CalendarHeatmapComponent implements OnChanges {
           return moment(d).isSame(element, 'month') && moment(d).isSame(element, 'year');
         });
 
-        return Math.floor(matchIndex / 7) * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING);
+        return Math.floor(matchIndex / 7) * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING) + me.options.DAY_WIDTH;
       })
-      .attr('y', 0);
+      .attr('y', me.options.MONTH_LABEL_HEIGHT);
 
     this.options.locale.days.forEach((day, index) => {
       index = this.formatWeekday(index);
       if (index % 2) {
         svg.append('text')
           .attr('class', 'day-initial')
-          .attr('transform', 'translate(-8,' + (this.options.SQUARE_LENGTH + this.options.SQUARE_PADDING) * (index + 1) + ')')
-          .style('text-anchor', 'middle')
+          .attr('transform',
+            `translate(0, ${(this.options.SQUARE_LENGTH + this.options.SQUARE_PADDING) * (index + 1) + this.options.MONTH_LABEL_HEIGHT})`)
+          .style('text-anchor', 'right')
           .attr('dy', '2')
           .text(day);
       }
