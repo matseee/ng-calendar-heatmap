@@ -115,13 +115,14 @@ export class CalendarHeatmapComponent implements OnChanges {
     this.dateRange = d3.timeDays(this.options.yearAgo, this.options.now);
     this.firstDate = moment(this.dateRange[0]);
     this.monthRange = d3.timeMonths(moment(this.firstDate).toDate(), this.options.now);
+
     if (this.data.length === 0) {
       this.options.max = 0;
     } else if (this.options.max === null) {
       this.options.max = d3.max(this.data, (d) => d.count);
     }
 
-    if (this.options.max !== 0) {
+    if (this.options.max > 0) {
       this.color = d3.scaleLinear()
         .range(this.options.colorRange)
         .domain([0, this.options.max]);
