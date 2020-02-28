@@ -14,7 +14,7 @@ export class AppComponent {
   public calendarDataCustom: CalendarData[];
   public calendarOptionsCustom: CalendarOptions;
 
-  constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer, randomDataService: RandomDataService) {
+  constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer, protected randomDataService: RandomDataService) {
 
     iconRegistry.addSvgIcon(
       'github-circle',
@@ -33,5 +33,15 @@ export class AppComponent {
 
   openGithub() {
     window.open('https://github.com/fischer-matthias/ng-calendar-heatmap');
+  }
+
+  newData() {
+    this.calendarData = this.randomDataService.generate(10, 20);
+    this.calendarDataCustom = this.randomDataService.generate(5, 120);
+  }
+
+  clearData() {
+    this.calendarData = [];
+    this.calendarDataCustom = [];
   }
 }
