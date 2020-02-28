@@ -121,9 +121,15 @@ export class CalendarHeatmapComponent implements OnChanges {
       this.options.max = d3.max(this.data, (d) => d.count);
     }
 
-    this.color = d3.scaleLinear()
-      .range(this.options.colorRange)
-      .domain([0, this.options.max]);
+    if (this.options.max !== 0) {
+      this.color = d3.scaleLinear()
+        .range(this.options.colorRange)
+        .domain([0, this.options.max]);
+    } else {
+      this.color = d3.scaleLinear()
+        .range(this.options.colorRange)
+        .domain([0, 10]);
+    }
   }
 
   protected renderChart() {
