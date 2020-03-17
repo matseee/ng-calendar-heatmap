@@ -108,6 +108,7 @@ export class CalendarHeatmapComponent implements OnChanges {
   }
 
   protected prepareChart() {
+    debugger;
     d3.select(this.getSelector())
       .selectAll('svg.calendar-heatmap')
       .remove();
@@ -134,6 +135,7 @@ export class CalendarHeatmapComponent implements OnChanges {
   }
 
   protected renderChart() {
+    debugger;
     const me = this;
     const svg = d3.select(this.getSelector())
       .style('position', 'relative')
@@ -186,7 +188,10 @@ export class CalendarHeatmapComponent implements OnChanges {
           .append('div')
           .attr('class', 'day-cell-tooltip')
           .html(me.tooltipHTMLForDate(d))
-          .style('left', () => (Math.floor(i / 7) * me.options.SQUARE_LENGTH + 'px'))
+          .style('left', () => {
+            const left = (Math.floor(i / 7) * me.options.SQUARE_LENGTH + 'px');
+            return left;
+          })
           .style('top', () => {
             return me.formatWeekday(d.getDay())
               * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING) + me.options.MONTH_LABEL_PADDING * 2 + 'px';
