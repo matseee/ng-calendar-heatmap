@@ -116,10 +116,12 @@ export class CalendarHeatmapComponent implements OnChanges {
     this.firstDate = moment(this.dateRange[0]);
     this.monthRange = d3.timeMonths(moment(this.firstDate).toDate(), this.options.now);
 
-    if (this.data.length === 0) {
-      this.options.max = 0;
-    } else if (this.options.max === null) {
-      this.options.max = d3.max(this.data, (d) => d.count);
+    if (!this.options.staticMax) {
+      if (this.data.length === 0) {
+        this.options.max = 0;
+      } else if (this.options.max === null) {
+        this.options.max = d3.max(this.data, (d) => d.count);
+      }
     }
 
     if (this.options.max > 0) {
@@ -161,7 +163,13 @@ export class CalendarHeatmapComponent implements OnChanges {
       .attr('class', 'day-cell')
       .attr('width', this.options.SQUARE_LENGTH)
       .attr('height', this.options.SQUARE_LENGTH)
-      .attr('fill', (d) => this.color(this.countForDate(d)))
+      .attr('fill', (d) => {
+        if (this.countForDate(d) >= me.options.max) {
+          return this.color(me.options.max);
+        } else {
+          return this.color(this.countForDate(d));
+        }
+      })
       .attr('x', (d) => {
         const cellDate = moment(d);
         const result = cellDate.week() - me.firstDate.week()
@@ -186,7 +194,10 @@ export class CalendarHeatmapComponent implements OnChanges {
           .append('div')
           .attr('class', 'day-cell-tooltip')
           .html(me.tooltipHTMLForDate(d))
-          .style('left', () => (Math.floor(i / 7) * me.options.SQUARE_LENGTH + 'px'))
+          .style('left', () => {
+            const left = (Math.floor(i / 7) * me.options.SQUARE_LENGTH + 'px');
+            return left;
+          })
           .style('top', () => {
             return me.formatWeekday(d.getDay())
               * (me.options.SQUARE_LENGTH + me.options.SQUARE_PADDING) + me.options.MONTH_LABEL_PADDING * 2 + 'px';

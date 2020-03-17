@@ -46,10 +46,13 @@ export interface CalendarOptions {
   SQUARE_LENGTH?: number;
   SQUARE_PADDING?: number;
   MONTH_LABEL_PADDING?: number;
+  DAY_WIDTH?: number;
+  MONTH_LABEL_HEIGHT?: number;
   now?: Date;
   yearAgo?: Date;
   startDate?: Date;
   max?: number;
+  staticMax?: boolean;
   colorRange?: any[];
   tooltipEnabled?: boolean;
   tooltipUnit?: any;
