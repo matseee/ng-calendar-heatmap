@@ -108,7 +108,6 @@ export class CalendarHeatmapComponent implements OnChanges {
   }
 
   protected prepareChart() {
-    debugger;
     d3.select(this.getSelector())
       .selectAll('svg.calendar-heatmap')
       .remove();
@@ -117,10 +116,12 @@ export class CalendarHeatmapComponent implements OnChanges {
     this.firstDate = moment(this.dateRange[0]);
     this.monthRange = d3.timeMonths(moment(this.firstDate).toDate(), this.options.now);
 
-    if (this.data.length === 0) {
-      this.options.max = 0;
-    } else if (this.options.max === null) {
-      this.options.max = d3.max(this.data, (d) => d.count);
+    if (!this.options.staticMax) {
+      if (this.data.length === 0) {
+        this.options.max = 0;
+      } else if (this.options.max === null) {
+        this.options.max = d3.max(this.data, (d) => d.count);
+      }
     }
 
     if (this.options.max > 0) {
@@ -135,7 +136,6 @@ export class CalendarHeatmapComponent implements OnChanges {
   }
 
   protected renderChart() {
-    debugger;
     const me = this;
     const svg = d3.select(this.getSelector())
       .style('position', 'relative')
@@ -163,7 +163,13 @@ export class CalendarHeatmapComponent implements OnChanges {
       .attr('class', 'day-cell')
       .attr('width', this.options.SQUARE_LENGTH)
       .attr('height', this.options.SQUARE_LENGTH)
-      .attr('fill', (d) => this.color(this.countForDate(d)))
+      .attr('fill', (d) => {
+        if (this.countForDate(d) >= me.options.max) {
+          return this.color(me.options.max);
+        } else {
+          return this.color(this.countForDate(d));
+        }
+      })
       .attr('x', (d) => {
         const cellDate = moment(d);
         const result = cellDate.week() - me.firstDate.week()

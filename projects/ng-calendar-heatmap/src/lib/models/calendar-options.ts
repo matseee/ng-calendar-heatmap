@@ -48,6 +48,7 @@ export interface CalendarOptions {
   yearAgo?: Date;
   startDate?: Date;
   max?: number;
+  staticMax?: boolean;
   colorRange?: any[];
   tooltipEnabled?: boolean;
   tooltipUnit?: any;
